@@ -1,11 +1,6 @@
 <header>
   <h1>All footage</h1>
   <div class="flex">
-    <app-thumbnail></app-thumbnail>
-    <app-thumbnail></app-thumbnail>
-    <app-thumbnail></app-thumbnail>
-    <app-thumbnail></app-thumbnail>
-    <app-thumbnail></app-thumbnail>
-    <app-thumbnail></app-thumbnail>
+    <app-thumbnail *ngFor="let video of videos" [file]="video"></app-thumbnail>
   </div>
 </header>

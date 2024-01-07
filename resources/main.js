@@ -1,7 +1,3 @@
-// function loadThumnails() {
-
-// }
-
 /**
  * Gets a list of dirctories containing various parts.
  * @param {function} callback 
@@ -91,11 +87,24 @@ function fileListPromise(folders, filter) {
     return new Promise((resolve, _reject) => compileFileList(folders, filter, resolve));
 }
 
+/** For each video, attempts to find a matching thumbnail and add it to the object. */
+function pairVideoThumbnails(videos, thumbnails) {
+    function extractId(fname) {
+        return fname.slice(0, 14);
+
+    }
+    for (let vid in videos) {
+        const id = extractId(videos[vid].basename);
+        videos[vid].thumbnail = thumbnails.find(thumbFile => extractId(thumbFile.basename) == id);
+    }
+    return videos;
+}
+
 /**
  * Collates all video thumbnails.
  */
 function collateVideosThumbnails() {
-    getFilesList('DCIM.html', async folders => {
+    getFilesList('DCIM', async folders => {
         const thumbnailPromise = fileListPromise(folders, isThumbnailFolder);
         const videoPromise = fileListPromise(folders, isVideoFolder);
 
@@ -103,7 +112,31 @@ function collateVideosThumbnails() {
         const videos = await videoPromise;
         console.log(videos);
         console.log(thumbnails);
+        pairVideoThumbnails(videos, thumbnails);
     });
 }
 
+function displayTumbnail(file) {
+    // Get the template and parent
+    const template = document.getElementById('video-template');
+    const parent = document.getElementById('all-videos');
+    const newNode = template.cloneNode(true);
+
+    // Set the thumbnail
+    if (file.thumbnail) {
+        const thumbnail = newNode.getElementsByClassName("video-thumbnail")[0];
+        thumbnail.src = `${file.thumbnail.path}/${file.thumbnail.basename}`;
+    }
+
+    // Set the title
+    const title = newNode.getElementsByClassName("video-name")[0];
+    // title.innerHTML = file.basename;
+    console.log(file.basename);
+
+    // Display
+    parent.appendChild(newNode);
+}
+
 collateVideosThumbnails();
+
+displayTumbnail({ basename: "20240106151330.JPG", path: "DCIM/103thumb/" });

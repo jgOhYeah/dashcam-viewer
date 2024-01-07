@@ -1,0 +1,11 @@
+.video-container {
+    width: 300px;
+    background-color: red;
+}
+.video-thumbnail {
+    width: 100%;
+}
+
+.flex-container {
+    display: flex;
+}

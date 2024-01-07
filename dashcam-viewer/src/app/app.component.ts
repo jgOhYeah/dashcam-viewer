@@ -15,12 +15,7 @@ type Filter = (folder: File) => boolean;
 })
 export class AppComponent {
   title = 'dashcam-viewer';
-  videos: File[] = [new File(
-    "20230929122604_10.MP4",
-    "DCIM/101video/",
-    new File(
-      "20230929122604.JPG", "DCIM/105thumb/"
-    ))];
+  videos: File[] = [];
 
   ngOnInit() {
     this.collateVideosThumbnails();

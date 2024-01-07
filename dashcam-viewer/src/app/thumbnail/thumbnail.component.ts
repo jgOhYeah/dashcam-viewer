@@ -10,10 +10,4 @@ import { File } from '../file';
 })
 export class ThumbnailComponent {
   @Input() file!: File;
-  // file: File = new File(
-  //   "20230929122604_10.MP4",
-  //   "DCIM/101video/",
-  //   new File(
-  //     "20230929122604.JPG", "DCIM/105thumb/"
-  //   ))
 }

@@ -1,20 +1,28 @@
 .video-card {
   // max-width: 300px;
   border-style: none;
+  background-color: black;
 }
 
 .video-thumbnail {
   width: 100%;
+  border-radius: 0.2em;
 }
 
 .video-name {
-  color: black;
-  font-size: 15px;
+  // color: white;
+  font-size: min(2vw, 15px);
   text-align: center;
+  padding: 0 0 5px 0;
 }
 
-@media only screen and (max-width: 800px) {
-  .video-name {
-    font-size: 8px;
-  }
+.video-snapshot {
+  background-color: #ff0000aa;
+  // color: white;
+  border-radius: 0.2em;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  margin: 0;
+  padding: 2px 5px;
 }

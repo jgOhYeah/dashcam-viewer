@@ -71,7 +71,7 @@ export class AppComponent {
     }
 
     // Sort to be predictable
-    result = result.sort((a, b) => a.basename.localeCompare(b.basename));
+    result = result.sort((a, b) => b.basename.localeCompare(a.basename)); // Descending
 
     // Done
     callback(result);
@@ -99,6 +99,10 @@ export class AppComponent {
     return videos;
   }
 
+  removeCurrentVideo(files: File[]): File[] {
+    return files.filter(file => !this.createFilter('_0.MP4')(file));
+  }
+
   /**
    * Collates all video thumbnails.
    */
@@ -107,8 +111,8 @@ export class AppComponent {
       const thumbnailPromise = this.fileListPromise(folders, this.createFilter('thumb'));
       const videoPromise = this.fileListPromise(folders, this.createFilter('video'));
 
-      const thumbnails = await thumbnailPromise;
-      const videos = await videoPromise;
+      const thumbnails = (await thumbnailPromise).filter(this.createFilter('.JPG'));
+      const videos = this.removeCurrentVideo(await videoPromise);
       this.videos = this.pairVideoThumbnails(videos, thumbnails);
       console.log(this.videos);
     });

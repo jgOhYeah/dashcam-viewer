@@ -11,4 +11,8 @@ export class File {
     get url() {
         return `${this.path}${this.path.endsWith('/') ? '' : '/'}${this.basename}`;
     }
+
+    get isSnapshot() {
+        return this.path.includes('101video');
+    }
 }

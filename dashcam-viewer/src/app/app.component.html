@@ -1,4 +1,4 @@
-<h1>All videos</h1>
-<div class="flex three three-500 four-700 five-1000 six-1200 seven-1500 eight-1700 nine-2000">
+<h1>All {{videos.length}} videos</h1>
+<div class="flex three four-800 five-1000 six-1200 seven-1500 eight-1700 nine-2000">
   <app-thumbnail *ngFor="let video of videos" [file]="video"></app-thumbnail>
 </div>

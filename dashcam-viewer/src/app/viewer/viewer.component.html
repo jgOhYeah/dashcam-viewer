@@ -1,1 +1,6 @@
-<p>viewer works!</p>
+<h1>{{videoId}}<span class="label error" *ngIf="video?.isSnapshot">Event</span></h1>
+<a href="{{video?.url}}">{{video?.url}}</a>
+<video controls>
+    <source src="{{video?.url}}" type="video/mp4">
+    Could not load the video file.
+</video>

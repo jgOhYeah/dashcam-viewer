@@ -8,6 +8,7 @@ type Filter = (folder: File) => boolean;
   providedIn: 'root'
 })
 export class LoaderService {
+  videos: File[] = [];
 
   constructor() {
     this.collateVideosThumbnails();
@@ -108,12 +109,22 @@ export class LoaderService {
 
       const thumbnails = (await thumbnailPromise).filter(this.createFilter('.JPG'));
       const videos = this.removeCurrentVideo(await videoPromise);
-      const videoPairs = this.pairVideoThumbnails(videos, thumbnails);
-      this.events$.next(videoPairs);
+      this.videos = this.pairVideoThumbnails(videos, thumbnails);
+      this.events$.next(this.videos);
     });
   }
 
+  /**
+   * Returns an observable that updates when the videos load.
+   */
   getLoad() {
     return this.events$.asObservable();
+  }
+
+  /**
+   * Finds a video based on its filename.
+   */
+  find(name: string): File | undefined {
+    return this.videos.find(video => video.basename == name);
   }
 }

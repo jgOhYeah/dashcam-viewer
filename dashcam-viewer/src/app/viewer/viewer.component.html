@@ -1,6 +1,8 @@
-<h1>{{videoId}}<span class="label error" *ngIf="video?.isSnapshot">Event</span></h1>
-<a href="{{video?.url}}">{{video?.url}}</a>
-<video controls>
+<div class="inline-content">
+    <h1><a class="label return-button" [routerLink]="['/']">Back</a>{{videoId}}<span class="label error" *ngIf="video?.isSnapshot">Event</span></h1>
+</div>
+<video controls *ngIf="video">
     <source src="{{video?.url}}" type="video/mp4">
     Could not load the video file.
 </video>
+<a class="button download" href="{{video?.url}}">Download</a>

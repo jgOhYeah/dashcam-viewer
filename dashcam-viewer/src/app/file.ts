@@ -15,4 +15,8 @@ export class File {
     get isSnapshot() {
         return this.path.includes('101video');
     }
+
+    get id() {
+        return this.basename.slice(0, this.basename.length - 4);
+    }
 }

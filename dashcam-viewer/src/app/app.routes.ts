@@ -7,6 +7,10 @@ export const routes: Routes = [
         path: 'viewer/:video',
         component: ViewerComponent
     },
+    // {
+    //     path: '',
+    //     redirectTo: 'viewer/20240106195314_180.MP4'
+    // },
     {
         path: '**',
         component: ListComponent

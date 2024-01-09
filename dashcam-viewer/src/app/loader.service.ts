@@ -20,7 +20,7 @@ export class LoaderService {
   /**
    * Gets a list of dirctories containing various parts.
    */
-  getFilesList(path: string, callback: (files: File[]) => void) {
+  private getFilesList(path: string, callback: (files: File[]) => void) {
     let client = new XMLHttpRequest();
     client.open('GET', path);
     client.onload = () => {
@@ -32,7 +32,7 @@ export class LoaderService {
   /**
    * Converts the response containing an automated directory listing to an array of strings.
    */
-  responseToArray(path: string, linksResponse: string): File[] {
+  private responseToArray(path: string, linksResponse: string): File[] {
     const parser = new DOMParser();
     const doc = parser.parseFromString(linksResponse, 'text/html');
     const linksArr: HTMLElement[] = [].slice.call(doc.getElementsByTagName('a'));
@@ -50,7 +50,7 @@ export class LoaderService {
   /**
    * Requests a list of all files and calls a callback with this list.
    */
-  async compileFileList(files: File[], filter: (folder: File) => boolean, callback: (files: File[]) => void) {
+  private async compileFileList(files: File[], filter: (folder: File) => boolean, callback: (files: File[]) => void) {
     // Get a list of each video
     const videos = files.filter(filter);
     const videoLists = videos.map(async file => {
@@ -76,14 +76,14 @@ export class LoaderService {
   /**
    * Returns a promise for getting a list of files in a folder.
    */
-  fileListPromise(folders: File[], filter: Filter): Promise<File[]> {
+  private fileListPromise(folders: File[], filter: Filter): Promise<File[]> {
     return new Promise((resolve, _reject) => this.compileFileList(folders, filter, resolve));
   }
 
   /**
    * For each video, attempts to find a matching thumbnail and add it to the object.
    */
-  pairVideoThumbnails(videos: File[], thumbnails: File[]): File[] {
+  private pairVideoThumbnails(videos: File[], thumbnails: File[]): File[] {
     function extractId(fname: string): string {
       return fname.slice(0, 14);
 
@@ -95,14 +95,17 @@ export class LoaderService {
     return videos;
   }
 
-  removeCurrentVideo(files: File[]): File[] {
+  /**
+   * Removes 0 length (based on filename) videos that won't yet have a thumbnail or load correctly.
+   */
+  private removeCurrentVideo(files: File[]): File[] {
     return files.filter(file => !this.createFilter('_0.MP4')(file));
   }
 
   /**
    * Collates all video thumbnails.
    */
-  collateVideosThumbnails() {
+  private collateVideosThumbnails() {
     this.getFilesList('DCIM', async folders => {
       const thumbnailPromise = this.fileListPromise(folders, this.createFilter('thumb'));
       const videoPromise = this.fileListPromise(folders, this.createFilter('video'));

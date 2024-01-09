@@ -1,6 +1,6 @@
 <div>
   <article class="card video-card">
-    <a [routerLink]="['/viewer', file.basename]">
+    <a [routerLink]="['/viewer', file.id]">
         <p *ngIf="file.isSnapshot" class="video-snapshot label error">Event</p>
         <img class="video-thumbnail" src="{{file.thumbnail?.url}}">
       <h2 class="video-name">{{file.basename}}</h2>

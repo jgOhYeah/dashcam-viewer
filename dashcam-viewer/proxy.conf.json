@@ -2,5 +2,9 @@
     "/DCIM": {
         "target": "http://localhost:8000",
         "secure": false
+    },
+    "/gps": {
+        "target": "http://localhost:8000",
+        "secure": false
     }
 }

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { ThumbnailComponent } from "../thumbnail/thumbnail.component";
 import { LoaderService } from '../loader.service';
-import { File } from '../file';
+import { File, VideoFile } from '../file';
 
 @Component({
   selector: 'app-list',
@@ -15,7 +15,7 @@ import { File } from '../file';
 export class ListComponent {
   constructor(private loader:LoaderService) {}
 
-  videos: File[] = []
+  videos: VideoFile[] = []
 
   ngOnInit() {
     this.loader.getLoad().subscribe(videos => {

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LoaderService } from '../loader.service';
-import { File } from '../file';
+import { File, VideoFile } from '../file';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -16,7 +16,7 @@ export class ViewerComponent {
   constructor(private route: ActivatedRoute, private loader: LoaderService) { }
 
   videoId: string = "";
-  video: File | undefined;
+  video: VideoFile | undefined;
 
   ngOnInit() {
     const videoId = this.route.snapshot.paramMap.get("video");

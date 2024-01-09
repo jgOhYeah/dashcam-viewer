@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { File } from '../file';
+import { File, VideoFile } from '../file';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -11,5 +11,5 @@ import { RouterModule } from '@angular/router';
   styleUrl: './thumbnail.component.scss'
 })
 export class ThumbnailComponent {
-  @Input() file!: File;
+  @Input() file!: VideoFile;
 }

@@ -1,7 +1,11 @@
+@import "../../styles.conf.scss";
+
+$title-size: min(2vw, 15px);
+
 .video-card {
   // max-width: 300px;
   border-style: none;
-  background-color: black;
+  background-color: $background;
 }
 
 .video-thumbnail {
@@ -10,19 +14,17 @@
 }
 
 .video-name {
-  // color: white;
-  font-size: min(2vw, 15px);
+  color: $text;
+  font-size: $title-size;
   text-align: center;
   padding: 0 0 5px 0;
 }
 
 .video-snapshot {
-  background-color: #ff0000aa;
-  // color: white;
-  border-radius: 0.2em;
+  font-size: $title-size;
   position: absolute;
   top: 0;
-  width: 100%;
+  // width: 100%;
   margin: 0;
   padding: 2px 5px;
 }

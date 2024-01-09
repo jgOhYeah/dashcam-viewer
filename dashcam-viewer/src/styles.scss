@@ -1,10 +1,11 @@
 @import "../node_modules/picnic/picnic.min.css";
+@import "./styles.conf.scss";
 
 body {
     padding: 10px;
-    background-color: black;
+    background-color: $background;
 }
 
-* {
-    color: wheat;
+body {
+    color: $text;
 }

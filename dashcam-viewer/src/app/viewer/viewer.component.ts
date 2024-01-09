@@ -22,7 +22,7 @@ export class ViewerComponent {
     const videoId = this.route.snapshot.paramMap.get("video");
     this.videoId = videoId ? videoId.concat('.MP4') : "";
     console.log(`Video ID: ${this.videoId}`);
-    this.loader.getLoad().subscribe(videos => {
+    this.loader.getVideoSubject().subscribe(videos => {
       // Wait until all videos have been loaded before trying to pick this one.
       if (videos.length > 0) {
         console.log("Videos loaded", videos);

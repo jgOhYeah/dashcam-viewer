@@ -3,14 +3,15 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { ThumbnailComponent } from "../thumbnail/thumbnail.component";
 import { LoaderService } from '../loader.service';
-import { File, VideoFile } from '../file';
+import { VideoFile } from '../file';
+import { MapComponent } from '../map/map.component';
 
 @Component({
   selector: 'app-list',
   standalone: true,
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss',
-  imports: [CommonModule, RouterOutlet, ThumbnailComponent]
+  imports: [CommonModule, RouterOutlet, ThumbnailComponent, MapComponent]
 })
 export class ListComponent {
   constructor(private loader:LoaderService) {}
@@ -18,7 +19,7 @@ export class ListComponent {
   videos: VideoFile[] = []
 
   ngOnInit() {
-    this.loader.getLoad().subscribe(videos => {
+    this.loader.getVideoSubject().subscribe(videos => {
       console.log(videos);
       this.videos = videos;
     });

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { File, VideoFile } from './file';
+import { File, GPSFile, VideoFile, GPSRecord } from './file';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 
 type Filter = (folder: File) => boolean;
@@ -9,19 +9,21 @@ type Filter = (folder: File) => boolean;
 })
 export class LoaderService {
   videos: VideoFile[] = [];
+  gps: GPSRecord[] = [];
 
   constructor() {
     this.collateVideosThumbnails();
     this.loadGps();
   }
 
-  events$ = new BehaviorSubject<VideoFile[]>([]);
+  videoLoaded$ = new BehaviorSubject<VideoFile[]>([]);
+  gpsLoaded$ = new BehaviorSubject<GPSRecord[]>([]);
 
 
   /**
    * Gets a list of dirctories containing various parts.
    */
-  private getFilesList<FType extends File>(type: { new(): FType ;}, path: string, callback: (files: FType[]) => void) {
+  private getFilesList<FType extends File>(type: { new(): FType; }, path: string, callback: (files: FType[]) => void) {
     let client = new XMLHttpRequest();
     client.open('GET', path);
     client.onload = () => {
@@ -33,7 +35,7 @@ export class LoaderService {
   /**
    * Converts the response containing an automated directory listing to an array of strings.
    */
-  private responseToArray<FType extends File>(type: { new(): FType ;}, path: string, linksResponse: string): FType[] {
+  private responseToArray<FType extends File>(type: { new(): FType; }, path: string, linksResponse: string): FType[] {
     const parser = new DOMParser();
     const doc = parser.parseFromString(linksResponse, 'text/html');
     const linksArr: HTMLElement[] = [].slice.call(doc.getElementsByTagName('a'));
@@ -57,7 +59,7 @@ export class LoaderService {
   /**
    * Requests a list of all files and calls a callback with this list.
    */
-  private async compileFileList<FType extends File>(type: { new(): FType ;}, sourceFiles: File[], filter: Filter, callback: (files: FType[]) => void) {
+  private async compileFileList<FType extends File>(type: { new(): FType; }, sourceFiles: File[], filter: Filter, callback: (files: FType[]) => void) {
     // Get a list of each video
     const videos = sourceFiles.filter(filter);
     const videoLists = videos.map(async file => {
@@ -83,7 +85,7 @@ export class LoaderService {
   /**
    * Returns a promise for getting a list of files in a folder.
    */
-  private fileListPromise<FType extends File>(type: { new(): FType ;}, folders: File[], filter: Filter): Promise<FType[]> {
+  private fileListPromise<FType extends File>(type: { new(): FType; }, folders: File[], filter: Filter): Promise<FType[]> {
     return new Promise((resolve, _reject) => this.compileFileList(type, folders, filter, resolve));
   }
 
@@ -120,21 +122,37 @@ export class LoaderService {
       const thumbnails = (await thumbnailPromise).filter(this.createFilter('.JPG'));
       const videos = this.removeCurrentVideo(await videoPromise);
       this.videos = this.pairVideoThumbnails(videos, thumbnails);
-      this.events$.next(this.videos);
+      this.videoLoaded$.next(this.videos);
     });
   }
 
   private loadGps() {
-    this.getFilesList(File, 'gps', files => {
-      console.log(files);
-    })
+    this.getFilesList(GPSFile, 'gps', async files => {
+      const gpsPromises: Promise<GPSRecord[]>[] = files.map(file => new Promise<GPSRecord[]>((resolve, _reject) => file.load(resolve)));
+
+      // Merge all lists together
+      let result: GPSRecord[] = [];
+      for (let i in gpsPromises) {
+        result = result.concat(await gpsPromises[i]);
+      }
+
+      // Sort to be predictable
+      this.gps = result.sort((a, b) => a.date.valueOf() - b.date.valueOf());
+      this.gpsLoaded$.next(this.gps);
+
+      console.log(result.slice(0, 10));
+    });
   }
 
   /**
    * Returns an observable that updates when the videos load.
    */
-  getLoad() {
-    return this.events$.asObservable();
+  getVideoSubject() {
+    return this.videoLoaded$.asObservable();
+  }
+
+  getGPSSubject() {
+    return this.gpsLoaded$.asObservable();
   }
 
   /**

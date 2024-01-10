@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Config, TopLevelSpec, compile } from 'vega-lite';
 import embed from 'vega-embed';
 import { LoaderService } from '../loader.service';
-import { GPSFile, GPSRecord } from '../file';
+import { GPSRecord } from '../file';
 
 @Component({
   selector: 'app-map',
@@ -20,7 +20,7 @@ export class MapComponent {
   ngOnInit() {
     this.loader.getGPSSubject().subscribe(async gps => {
       // Filter GPS data if required.
-      let gpsFiltered:GPSRecord[];
+      let gpsFiltered: GPSRecord[];
       // Saving in const to keep typescript happy about possibly undefined.
       const start = this.startDate;
       const end = this.endDate;
@@ -33,46 +33,87 @@ export class MapComponent {
       // Map specification
       const vegaLiteSpec: TopLevelSpec = {
         $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
-        layer: [
-          // {
-          //   // World map
-          //   data: {
-          //     name: 'world',
-          //     // url: 'https://raw.githubusercontent.com/vega/vega/main/packages/vega-loader/test/data/world-110m.json',
-          //     url: 'https://jgohyeah.github.io/FIT3179/Assignment2/data/VictoriaAll.json',
-          //     format: {
-          //       type: 'topojson',
-          //       // feature: 'countries'
-          //       feature: 'Victoria'
-          //     }
-          //   },
-          //   mark: {
-          //     type: 'geoshape',
-          //     color: 'grey'
-          //   },
-          // },
+        autosize: {
+          contains: 'padding'
+        },
+        data: { values: gpsFiltered },
+        vconcat: [
           {
-            // GPS Lines
-            data: { values: gpsFiltered },
+            layer: [
+              // {
+              //   // World map
+              //   data: {
+              //     name: 'world',
+              //     // url: 'https://raw.githubusercontent.com/vega/vega/main/packages/vega-loader/test/data/world-110m.json',
+              //     url: 'https://jgohyeah.github.io/FIT3179/Assignment2/data/VictoriaAll.json',
+              //     format: {
+              //       type: 'topojson',
+              //       // feature: 'countries'
+              //       feature: 'Victoria'
+              //     }
+              //   },
+              //   mark: {
+              //     type: 'geoshape',
+              //     color: 'grey'
+              //   },
+              // },
+              {
+                // GPS Lines
+                mark: {
+                  type: 'line',
+                  color: 'red'
+                },
+                encoding: {
+                  latitude: { field: 'latitude' },
+                  longitude: { field: 'longitude' }
+                }
+              }
+            ],
+            width: 'container',
+            height: 500
+          },
+          {
             mark: {
-              type: 'line',
-              color: 'red'
+              type: 'line'
             },
             encoding: {
-              latitude: { field: 'latitude' },
-              longitude: { field: 'longitude' }
-            }
+              x: {
+                field: 'date',
+                type: 'temporal'
+              },
+              y: {
+                field: 'speed',
+                type: 'quantitative'
+              }
+            },
+            width: 'container',
+            height: 200
+          },
+          {
+            mark: {
+              type: 'line',
+            },
+            encoding: {
+              x: {
+                field: 'date',
+                type: 'temporal'
+              },
+              y: {
+                field: 'elevation',
+                type: 'quantitative'
+              },
+            },
+            width: 'container',
+            height: 200
           }
-        ],
-        width: "container",
-        height: 600
+        ]
       };
 
       const config: Config = {
         projection: {
           type: 'mercator',
           // 'clipExtent': [[]]
-          
+
         }
       };
 

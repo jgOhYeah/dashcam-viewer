@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Config, TopLevelSpec, compile } from 'vega-lite';
-import { LayerSpec, NonNormalizedSpec } from 'vega-lite/build/src/spec';
+import { NonNormalizedSpec } from 'vega-lite/build/src/spec';
 import embed from 'vega-embed';
 import { LoaderService } from '../loader.service';
 import { GPSDataset, GPSRecord, haversineDist } from '../gps';
@@ -26,131 +26,156 @@ export class MapComponent {
 
   ngOnInit() {
     this.loader.getGPSSubject().subscribe(async gps => {
-      // Filter GPS data if required.
-      let gpsFiltered: GPSRecord[];
-      // Saving in const to keep typescript happy about possibly undefined.
-      const start = this.startDate;
-      const end = this.endDate;
-      if (start && end) {
-        gpsFiltered = gps.filterDates(start, end);
-      } else {
-        gpsFiltered = gps.data;
-      }
+      if (gps.length) {
+        // Filter GPS data if required.
+        let gpsFiltered: GPSRecord[];
+        // Saving in const to keep typescript happy about possibly undefined.
+        const start = this.startDate;
+        const end = this.endDate;
+        if (start && end) {
+          gpsFiltered = gps.filterDates(start, end);
+        } else {
+          gpsFiltered = gps.data;
+        }
 
-      if (gpsFiltered.length) {
-        // Enable the graph
-        this.gpsDataPresent = true;
-      }
+        if (gpsFiltered.length) {
+          // Enable the graph and keep going
+          this.gpsDataPresent = true;
 
-      // Simplify to reduce the points if required:
-      const filteredDataset = (new GPSDataset(gpsFiltered));
-      let simpleDataset: GPSDataset;
-      if (this.simplifyPoints) {
-        const timeStep = (filteredDataset.duration - filteredDataset.idleTime) / this.simplifyPoints;
-        console.log(`Simplifying points to timestep ${timeStep}`);
-        simpleDataset = new GPSDataset(filteredDataset.simplify(timeStep));
-        console.log(`Simplified to ${simpleDataset.length} points.`);
-      } else {
-        simpleDataset = filteredDataset;
-      }
+          // Simplify to reduce the points if required:
+          const filteredDataset = (new GPSDataset(gpsFiltered));
+          let simpleDataset: GPSDataset;
+          if (this.simplifyPoints) {
+            const timeStep = (filteredDataset.duration - filteredDataset.idleTime) / this.simplifyPoints;
+            console.log(`Simplifying points to timestep ${timeStep}`);
+            simpleDataset = new GPSDataset(filteredDataset.simplify(timeStep));
+            console.log(`Simplified to ${simpleDataset.length} points.`);
+          } else {
+            simpleDataset = filteredDataset;
+          }
 
-      // Set the distance.
-      this.distance = simpleDataset.calculateDistance(haversineDist).toFixed(1);
+          // Set the distance.
+          this.distance = simpleDataset.calculateDistance(haversineDist).toFixed(1);
 
-      // Map specification
-      const mapSpec: NonNormalizedSpec = {
-        layer: [
-          // {
-          //   // World map
-          //   data: {
-          //     name: 'world',
-          //     // url: 'https://raw.githubusercontent.com/vega/vega/main/packages/vega-loader/test/data/world-110m.json',
-          //     url: 'https://jgohyeah.github.io/FIT3179/Assignment2/data/VictoriaAll.json',
-          //     format: {
-          //       type: 'topojson',
-          //       // feature: 'countries'
-          //       feature: 'Victoria'
-          //     }
-          //   },
-          //   mark: {
-          //     type: 'geoshape',
-          //     color: 'grey'
-          //   },
-          // },
-          {
-            // GPS Lines
+          // Map specification
+          const mapSpec: NonNormalizedSpec = {
+            layer: [
+              // {
+              //   // World map
+              //   data: {
+              //     name: 'world',
+              //     // url: 'https://raw.githubusercontent.com/vega/vega/main/packages/vega-loader/test/data/world-110m.json',
+              //     url: 'https://jgohyeah.github.io/FIT3179/Assignment2/data/VictoriaAll.json',
+              //     format: {
+              //       type: 'topojson',
+              //       // feature: 'countries'
+              //       feature: 'Victoria'
+              //     }
+              //   },
+              //   mark: {
+              //     type: 'geoshape',
+              //     color: 'grey'
+              //   },
+              // },
+              {
+                // GPS Lines
+                mark: {
+                  type: 'line'
+                },
+                encoding: {
+                  latitude: { field: 'latitude' },
+                  longitude: { field: 'longitude' },
+                  color: simpleDataset.duration > 3600000 * 24 ? {
+                    field: 'localeDate',
+                    title: 'Date'
+                  } : undefined
+                }
+              }
+            ],
+            width: 'container',
+            height: 500
+          };
+
+          const speedTitle: string = 'Speed (km/h)';
+          const speedFormat: string = '.2f';
+          const speedSpec: NonNormalizedSpec = {
             mark: {
               type: 'line',
-              color: 'red'
+              tooltip: true
             },
             encoding: {
-              latitude: { field: 'latitude' },
-              longitude: { field: 'longitude' }
+              x: {
+                field: 'date',
+                type: 'temporal',
+                title: 'Time'
+              },
+              y: {
+                field: 'speed',
+                type: 'quantitative',
+                title: speedTitle
+              },
+              tooltip: [
+                {
+                  field: 'speed',
+                  title: speedTitle,
+                  format: speedFormat
+                }
+              ]
+            },
+            width: 'container',
+            height: 200
+          };
+
+          const elevationSpec: NonNormalizedSpec = {
+            mark: {
+              type: 'line',
+              tooltip: true
+            },
+            encoding: {
+              x: {
+                field: 'date',
+                type: 'temporal',
+                title: 'Time'
+              },
+              y: {
+                field: 'elevation',
+                type: 'quantitative',
+                title: 'Elevation (m)'
+              },
+            },
+            width: 'container',
+            height: 200
+          };
+
+          const elementsList = this.showGraphs ? [mapSpec, speedSpec, elevationSpec] : [mapSpec];
+
+          const vegaLiteSpec: TopLevelSpec = {
+            $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+            autosize: {
+              contains: 'content'
+            },
+            data: { values: simpleDataset.data },
+            vconcat: elementsList
+          };
+
+          const config: Config = {
+            projection: {
+              type: 'mercator',
+              // 'clipExtent': [[]]
+
+            },
+            legend: {
+              orient: 'top-right'
             }
           }
-        ],
-        width: 'container',
-        height: 500
-      };
 
-      const speedSpec: NonNormalizedSpec = {
-        mark: {
-          type: 'line'
-        },
-        encoding: {
-          x: {
-            field: 'date',
-            type: 'temporal'
-          },
-          y: {
-            field: 'speed',
-            type: 'quantitative'
-          }
-        },
-        width: 'container',
-        height: 200
-      };
-
-      const elevationSpec: NonNormalizedSpec = {
-        mark: {
-          type: 'line',
-        },
-        encoding: {
-          x: {
-            field: 'date',
-            type: 'temporal'
-          },
-          y: {
-            field: 'elevation',
-            type: 'quantitative'
-          },
-        },
-        width: 'container',
-        height: 200
-      };
-
-      const elementsList = this.showGraphs ? [mapSpec, speedSpec, elevationSpec] : [mapSpec];
-
-      const vegaLiteSpec: TopLevelSpec = {
-        $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
-        autosize: {
-          contains: 'padding'
-        },
-        data: { values: simpleDataset.data },
-        vconcat: elementsList
-      };
-
-      const config: Config = {
-        projection: {
-          type: 'mercator',
-          // 'clipExtent': [[]]
-
+          // Draw the map.
+          const vegaSpec = compile(vegaLiteSpec, { config }).spec;
+          await embed("figure#vega-map", vegaSpec);
         }
-      };
-
-      // Draw the map.
-      const vegaSpec = compile(vegaLiteSpec, { config }).spec;
-      await embed("figure#vega-map", vegaSpec);
+      } else {
+        console.log("No GPS data loaded yet.");
+      }
     });
   }
 }

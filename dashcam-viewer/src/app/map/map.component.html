@@ -1,4 +1,5 @@
-<div *ngIf="gpsDataPresent">
-  <figure id="vega-map"></figure>
-  <p><b>Distance: </b>{{distance}}km</p>
+<div>
+  <figure id="vega-map" [ngClass]="showGraphs?'vega-map-charts':'vega-map-only'" class="vega-chart"></figure>
+  <p *ngIf="gpsDataPresent;else noGps"><b>Distance: </b>{{distance}}km</p>
 </div>
+<ng-template #noGps><p>No GPS data available.</p></ng-template>

@@ -11,6 +11,7 @@ export class GPSRecord {
         elevation?: string
     ) {
         this.date = compactToDate(datetime);
+        this.localeDate = this.date.toLocaleDateString();
 
         // Convert degrees decimal minutes to decimal degrees.
         function minutesToDegrees(latLon: string): number {
@@ -38,6 +39,7 @@ export class GPSRecord {
     longitude: number;
     speed: number;
     elevation?: number;
+    localeDate:string;
 
     setElevation(value: string) {
         this.elevation = parseFloat(value);

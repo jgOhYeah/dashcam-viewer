@@ -1,6 +1,9 @@
-<h1>All {{videos.length}} videos</h1>
-<div class="flex three four-800 five-1000 six-1200 seven-1500 eight-1700 nine-2000">
-  <app-thumbnail *ngFor="let video of videos" [file]="video"></app-thumbnail>
+<h1>All videos</h1>
+<div *ngFor="let videoDay of videos">
+  <h2>{{videoDay.date}} ({{videoDay.videos.length}} {{videoDay.videos.length != 1 ? "videos" : "video"}})</h2>
+  <div class="flex three four-800 five-1000 six-1200 seven-1500 eight-1700 nine-2000">
+    <app-thumbnail *ngFor="let video of videoDay.videos" [file]="video"></app-thumbnail>
+  </div>
 </div>
 
 <h1>Map</h1>

@@ -1,6 +1,12 @@
-#vega-map {
-    // width: calc(100vw - 20px);
+.vega-chart {
     margin: 0;
     padding: 0;
-    display: block;
+}
+
+.vega-map-charts {
+    width: calc(100vw - 76px);
+}
+
+.vega-map-only {
+    width: calc(100vw - 35px);
 }

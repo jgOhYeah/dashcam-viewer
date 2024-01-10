@@ -57,6 +57,10 @@ export class MapComponent {
           // Set the distance.
           this.distance = simpleDataset.calculateDistance(haversineDist).toFixed(1);
 
+          const speedTitle: string = 'Speed (km/h)';
+          const speedFormat: string = '.2f';
+          const elevationTitle: string = 'Elevation (m)';
+
           // Map specification
           const mapSpec: NonNormalizedSpec = {
             layer: [
@@ -80,7 +84,8 @@ export class MapComponent {
               {
                 // GPS Lines
                 mark: {
-                  type: 'line'
+                  type: 'line',
+                  tooltip: true
                 },
                 encoding: {
                   latitude: { field: 'latitude' },
@@ -88,7 +93,22 @@ export class MapComponent {
                   color: simpleDataset.duration > 3600000 * 24 ? {
                     field: 'localeDate',
                     title: 'Date'
-                  } : undefined
+                  } : undefined,
+                  tooltip: [
+                    {
+                      field: 'localeDate',
+                      title: 'Date'
+                    },
+                    {
+                      field: 'speed',
+                      title: speedTitle,
+                      format: speedFormat
+                    },
+                    {
+                      field: 'elevation',
+                      title: elevationTitle
+                    }
+                  ]
                 }
               }
             ],
@@ -96,8 +116,6 @@ export class MapComponent {
             height: 500
           };
 
-          const speedTitle: string = 'Speed (km/h)';
-          const speedFormat: string = '.2f';
           const speedSpec: NonNormalizedSpec = {
             mark: {
               type: 'line',
@@ -140,8 +158,14 @@ export class MapComponent {
               y: {
                 field: 'elevation',
                 type: 'quantitative',
-                title: 'Elevation (m)'
+                title: elevationTitle
               },
+              tooltip: [
+                {
+                  field: 'elevation',
+                  title: elevationTitle
+                }
+              ]
             },
             width: 'container',
             height: 200

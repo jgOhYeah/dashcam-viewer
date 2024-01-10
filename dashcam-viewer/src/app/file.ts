@@ -1,3 +1,4 @@
+import { GPSRecord } from "./gps";
 /**
  * Represents a file stored on the dashcam.
  */
@@ -86,56 +87,12 @@ export class GPSFile extends File {
 
 }
 
-export class GPSRecord {
-    constructor(
-        datetime: string,
-        latValue: string,
-        latDir: string,
-        lonValue: string,
-        lonDir: string,
-        speed: string,
-        elevation?: string
-    ) {
-        this.date = compactToDate(datetime);
-
-        // Convert degrees decimal minutes to decimal degrees.
-        function minutesToDegrees(latLon: string): number {
-            const decimalLocation = latLon.indexOf('.');
-            const degrees = parseInt(latLon.slice(0, decimalLocation - 2));
-            const minutes = parseFloat(latLon.slice(decimalLocation - 2));
-            return degrees + (minutes / 60);
-        }
-
-        // Latitude and longitude.
-        this.latitude = minutesToDegrees(latValue) * (latDir == 'S' ? -1 : 1);
-        this.longitude = minutesToDegrees(lonValue) * (lonDir == 'E' ? 1 : -1);
-
-        // Set the speed
-        this.speed = parseFloat(speed) * 1.852; // knots to km/h.
-
-        // Set the elevation
-        if (elevation) {
-            this.setElevation(elevation);
-        }
-    }
-
-    date: Date;
-    latitude: number;
-    longitude: number;
-    speed: number;
-    elevation?: number;
-
-    setElevation(value: string) {
-        this.elevation = parseFloat(value);
-    }
-}
-
 /**
  * Converts a compact string representation to a date.
  * @param dateStr the input YYYYMMDDHHMMSS string
  * @returns javascript date.
  */
-function compactToDate(dateStr: string): Date {
+export function compactToDate(dateStr: string): Date {
     const newFormat = `${dateStr.slice(0, 4)}-${dateStr.slice(4, 6)}-${dateStr.slice(6, 8)}T${dateStr.slice(8, 10)}:${dateStr.slice(10, 12)}:${dateStr.slice(12, 14)}`;
     return new Date(newFormat);
 }

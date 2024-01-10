@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { File, GPSFile, VideoFile, GPSRecord } from './file';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { File, GPSFile, VideoFile } from './file';
+import { GPSDataset, GPSRecord } from './gps';
+import { BehaviorSubject } from 'rxjs';
 
 type Filter = (folder: File) => boolean;
 
@@ -9,15 +10,15 @@ type Filter = (folder: File) => boolean;
 })
 export class LoaderService {
   videos: VideoFile[] = [];
-  gps: GPSRecord[] = [];
+  gps: GPSDataset = new GPSDataset([]);
 
   constructor() {
     this.collateVideosThumbnails();
     this.loadGps();
   }
 
-  videoLoaded$ = new BehaviorSubject<VideoFile[]>([]);
-  gpsLoaded$ = new BehaviorSubject<GPSRecord[]>([]);
+  videoLoaded$ = new BehaviorSubject<VideoFile[]>(this.videos);
+  gpsLoaded$ = new BehaviorSubject<GPSDataset>(this.gps);
 
 
   /**
@@ -137,10 +138,8 @@ export class LoaderService {
       }
 
       // Sort to be predictable
-      this.gps = result.sort((a, b) => a.date.valueOf() - b.date.valueOf());
+      this.gps = new GPSDataset(result.sort((a, b) => a.date.valueOf() - b.date.valueOf()));
       this.gpsLoaded$.next(this.gps);
-
-      console.log(result.slice(0, 10));
     });
   }
 

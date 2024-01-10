@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Config, TopLevelSpec, compile } from 'vega-lite';
 import embed from 'vega-embed';
 import { LoaderService } from '../loader.service';
+import { GPSFile, GPSRecord } from '../file';
 
 @Component({
   selector: 'app-map',
@@ -11,10 +12,25 @@ import { LoaderService } from '../loader.service';
   styleUrl: './map.component.scss'
 })
 export class MapComponent {
+  @Input() startDate: Date | undefined;
+  @Input() endDate: Date | undefined;
+
   constructor(private loader: LoaderService) { }
 
   ngOnInit() {
     this.loader.getGPSSubject().subscribe(async gps => {
+      // Filter GPS data if required.
+      let gpsFiltered:GPSRecord[];
+      // Saving in const to keep typescript happy about possibly undefined.
+      const start = this.startDate;
+      const end = this.endDate;
+      if (start && end) {
+        gpsFiltered = gps.filter(record => record.date >= start && record.date <= end);
+      } else {
+        gpsFiltered = gps;
+      }
+
+      // Map specification
       const vegaLiteSpec: TopLevelSpec = {
         $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
         layer: [
@@ -37,7 +53,7 @@ export class MapComponent {
           // },
           {
             // GPS Lines
-            data: { values: gps },
+            data: { values: gpsFiltered },
             mark: {
               type: 'line',
               color: 'red'
@@ -60,6 +76,7 @@ export class MapComponent {
         }
       };
 
+      // Draw the map.
       const vegaSpec = compile(vegaLiteSpec, { config }).spec;
       await embed("figure#vega-map", vegaSpec);
     });

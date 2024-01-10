@@ -1,3 +1,5 @@
 #vega-map {
-    width: 100%;
+    width: calc(100vw - 20px);
+    margin: 0;
+    padding: 0;
 }

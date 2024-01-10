@@ -20,6 +20,27 @@ export class VideoFile extends File {
     }
 
     thumbnail: File | undefined;
+
+    /**
+     * Returns a date representing the start of the video recording.
+     */
+    get startDate(): Date {
+        return this.basename ? compactToDate(this.basename.split('_')[0]) : new Date();
+    }
+
+    /**
+     * Returns the number of seconds in the video
+     */
+    get duration(): number {
+        return this.basename ? parseInt(this.basename.split('_')[1]) : 0;
+    }
+
+    /**
+     * Returns the date that the recording finishes.
+     */
+    get endDate(): Date {
+        return new Date(this.startDate.valueOf() + (this.duration*1000));
+    }
 }
 
 export class GPSFile extends File {

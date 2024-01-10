@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LoaderService } from '../loader.service';
-import { File, VideoFile } from '../file';
+import { VideoFile } from '../file';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { MapComponent } from '../map/map.component';
 
 @Component({
   selector: 'app-viewer',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, MapComponent],
   templateUrl: './viewer.component.html',
   styleUrl: './viewer.component.scss'
 })

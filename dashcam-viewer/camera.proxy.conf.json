@@ -1,0 +1,10 @@
+{
+    "/DCIM": {
+        "target": "http://192.168.1.1",
+        "secure": false
+    },
+    "/gps": {
+        "target": "http://192.168.1.1",
+        "secure": false
+    }
+}

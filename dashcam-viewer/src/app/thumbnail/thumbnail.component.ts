@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { File, VideoFile } from '../file';
+import { VideoFile } from '../file';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 

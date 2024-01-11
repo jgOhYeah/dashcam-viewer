@@ -5,5 +5,6 @@
     <source src="{{video.url}}" type="video/mp4">
     Could not load the video file.
 </video>
-<a class="button download" href="{{video?.url}}">Download</a>
+<a class="button download" href="{{video?.url}}">Download Video</a>
+<app-gpx [startDate]="video?.startDate" [endDate]="video?.endDate" [name]="video?.id + '.gpx'" [fullWidth]="true"></app-gpx>
 <app-map [startDate]="video?.startDate" [endDate]="video?.endDate"></app-map>

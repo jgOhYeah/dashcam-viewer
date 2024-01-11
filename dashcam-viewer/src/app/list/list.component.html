@@ -1,10 +1,19 @@
 <h1>All videos</h1>
 <div *ngFor="let videoDay of videos">
-  <h2>{{videoDay.date}} ({{videoDay.videos.length}} {{videoDay.videos.length != 1 ? "videos" : "video"}})</h2>
+  <div class="day-header">
+    <h2 class="day-title">
+      {{videoDay.date.toLocaleDateString()}} ({{videoDay.videos.length}} {{videoDay.videos.length != 1 ? "videos" :
+      "video"}})
+    </h2>
+    <p class="day-gpx">
+      <app-gpx [startDate]="videoDay.date" [endDate]="dayPlusOne(videoDay.date)" [name]="dateGpxName(videoDay.date)" buttonLabel="Download daily GPX file"></app-gpx>
+    </p>
+  </div>
   <div class="flex three four-800 five-1000 six-1200 seven-1500 eight-1700 nine-2000">
     <app-thumbnail *ngFor="let video of videoDay.videos" [file]="video"></app-thumbnail>
   </div>
 </div>
 
 <h1>Map</h1>
+<app-gpx name="dashcam_all_gps.gpx" [fullWidth]="true" buttonLabel="Download all GPS data"></app-gpx>
 <app-map [showGraphs]="false" [simplifyPoints]="1000"></app-map>

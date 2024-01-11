@@ -9,3 +9,15 @@ body {
 body {
     color: $text;
 }
+
+@media only screen and (max-width: 600px) {
+    .day-gpx {
+        float: none;
+        width: 100%;
+    }
+
+    .gpx-download-button {
+        width: 100%;
+        padding-top: 0;
+    }
+}

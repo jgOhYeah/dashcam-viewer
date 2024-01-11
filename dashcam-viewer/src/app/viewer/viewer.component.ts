@@ -5,11 +5,12 @@ import { VideoFile } from '../file';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MapComponent } from '../map/map.component';
+import { GpxComponent } from '../gpx/gpx.component';
 
 @Component({
   selector: 'app-viewer',
   standalone: true,
-  imports: [CommonModule, RouterModule, MapComponent],
+  imports: [CommonModule, RouterModule, MapComponent, GpxComponent],
   templateUrl: './viewer.component.html',
   styleUrl: './viewer.component.scss'
 })

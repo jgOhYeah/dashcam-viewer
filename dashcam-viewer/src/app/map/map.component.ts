@@ -28,15 +28,7 @@ export class MapComponent {
     this.loader.getGPSSubject().subscribe(async gps => {
       if (gps.length) {
         // Filter GPS data if required.
-        let gpsFiltered: GPSRecord[];
-        // Saving in const to keep typescript happy about possibly undefined.
-        const start = this.startDate;
-        const end = this.endDate;
-        if (start && end) {
-          gpsFiltered = gps.filterDates(start, end);
-        } else {
-          gpsFiltered = gps.data;
-        }
+        let gpsFiltered: GPSRecord[] = gps.filterDates(this.startDate, this.endDate);
 
         if (gpsFiltered.length) {
           // Enable the graph and keep going

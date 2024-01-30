@@ -50,6 +50,20 @@
               ],
               "outputHashing": "all"
             },
+            "demo": {
+              "assets": [
+                {
+                  "glob": "DCIM/**",
+                  "input": "src/demo-files",
+                  "output": "."
+                },
+                {
+                  "glob": "gps/**",
+                  "input": "src/demo-files",
+                  "output": "."
+                }
+              ]
+            },
             "development": {
               "optimization": false,
               "extractLicenses": false,

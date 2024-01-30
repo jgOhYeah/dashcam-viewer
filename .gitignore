@@ -42,8 +42,8 @@ testem.log
 Thumbs.db
 
 # Custom
-audio
-DCIM
-gps
-mehome-ft
+/audio
+/DCIM
+/gps
+/mehome-ft
 *.bak

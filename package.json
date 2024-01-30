@@ -6,7 +6,7 @@
     "start": "cd ./ && python3 -m http.server& ng serve --disable-host-check --host 0.0.0.0 --proxy-config ./proxy.conf.json",
     "start-camera": "ng serve --disable-host-check --host 0.0.0.0 --proxy-config ./camera.proxy.conf.json",
     "build": "ng build",
-    "demo": "ng build --configuration demo"
+    "demo": "ng build --configuration demo --base-href https://jgOhYeah.github.io/dashcam-viewer/"
   },
   "private": true,
   "dependencies": {

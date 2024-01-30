@@ -1,7 +1,7 @@
 # Dashcam Viewer Webpage
 This is a web interface for a dashcam (Kaiser Bass R50), written using Angular. It is designed to be hosted by the dashcam itself.
 
-A demonstration is available [here](https://jgohyeah.github.io/dashcam-viewer).
+A demonstration with downscaled videos is available [here](https://jgohyeah.github.io/dashcam-viewer).
 
 ## Premise
 The dashcam in question runs linux on what seems to be a [HiSilicon Hi3518E](https://www.silicondevice.com/file.upload/images/Gid1327Pdf_Hi3518E.pdf) SoC*. This camera does not have a screen and is designed to be configured and accessed over its own WiFi network.
